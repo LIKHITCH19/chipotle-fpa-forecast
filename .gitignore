@@ -1,0 +1,16 @@
+# SEC contact line
+.env
+
+# raw downloads (~75 MB) - run src/fetch_data.py to get them
+data/raw/*
+!data/raw/download_log.csv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Excel / macOS
+~$*.xlsx
+.DS_Store
+.~*
