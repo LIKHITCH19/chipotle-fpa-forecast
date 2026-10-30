@@ -6,6 +6,17 @@ SEC filings: a driver-based 2027 budget for restaurant-level margin, and a Q3
 
 Independent analysis; not affiliated with Chipotle and not investment advice.
 
+## Q3 2026 scorecard
+
+| | My forecast | Chipotle's guidance | Actual | Variance |
+|---|---|---|---|---|
+| Comparable sales | +1.0% | about +1% | *Oct 28* | |
+| Revenue | $3,263M | | | |
+| Restaurant-level margin | 23.4% | ~23.6% implied | | |
+| Diluted EPS | $0.27 | | | |
+
+Reasoning: [`docs/q3_2026_forecast.md`](docs/q3_2026_forecast.md).
+
 ## Data
 
 `src/fetch_data.py` downloads Chipotle's 10-Q/10-K XBRL facts and quarterly

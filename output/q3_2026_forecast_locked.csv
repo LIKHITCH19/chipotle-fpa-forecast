@@ -1,0 +1,17 @@
+key,label,value
+comps,Comparable sales growth,0.00976899999999992
+tx,Transactions growth,-0.011
+check,Average check growth,0.021
+opened,Restaurants opened,85
+rest_end,Restaurants at end of quarter,4267
+rev2,Revenue ($000),3262780.00356223
+food_pct,"Food, beverage and packaging %",0.299292900486774
+labor_pct,Labor %,0.256011488433827
+occ_pct,Occupancy %,0.0550039572864437
+oth_pct,Other operating costs %,0.155739678779307
+rlm,Restaurant-level margin,0.233951975013649
+ga,G&A ($000),190000
+oi,Income from operations ($000),451425.425761557
+opm,Operating margin,0.138356072204899
+ni,Net income ($000),344194.069321168
+eps,Diluted EPS ($),0.272366796415387
