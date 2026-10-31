@@ -20,6 +20,10 @@ Chipotle, and nothing here is investment advice.
 - **One-page memo:** [`docs/memo_2027_budget.md`](docs/memo_2027_budget.md)
 - **Q3 forecast and reasoning:** [`docs/q3_2026_forecast.md`](docs/q3_2026_forecast.md)
 - **KPI tree and definitions:** [`docs/kpi_tree.md`](docs/kpi_tree.md)
+- **Dashboard:** [Tableau Public](https://public.tableau.com/app/profile/likhit.vardhan.chiliveri/viz/ChipotleFPA-2027MarginBudgetandQ32026Forecast/ChipotleFPA)
+  (workbook in [`tableau/`](tableau/))
+
+[![Tableau dashboard](images/dashboard.png)](https://public.tableau.com/app/profile/likhit.vardhan.chiliveri/viz/ChipotleFPA-2027MarginBudgetandQ32026Forecast/ChipotleFPA)
 
 ## Q3 2026 scorecard
 
@@ -121,9 +125,11 @@ src/
   run_model.py        recalculates it per scenario and saves outputs
   recalc.py           LibreOffice recalculation and formula-error scan
   make_charts.py      README charts
+  make_tableau_data.py  data for the Tableau dashboard
 data/processed/       tidy CSVs used by the model
 model/                the Excel model
 output/               locked Q3 forecast, quarterly model output, scenarios, levers
+tableau/              the Tableau workbook
 docs/                 memo, forecast note, KPI tree, data notes
 images/               charts
 ```
