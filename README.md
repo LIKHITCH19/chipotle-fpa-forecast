@@ -7,10 +7,12 @@ through this the way a company's FP&A team would: build a driver-based model
 from the public filings, put a number on next year's budget, figure out which
 lever matters most, and then make a real forecast and see how close it gets.
 
-Chipotle reports Q3 2026 on **October 28, 2026**. I made my forecast for that
-quarter on October 15 and published it on [Tableau Public](https://public.tableau.com/app/profile/likhit.vardhan.chiliveri/viz/ChipotleFPA-2027MarginBudgetandQ32026Forecast/ChipotleFPA) on
-October 16, so the date is on record outside this repo. The actual results get
-scored against it below.
+I made a forecast for Q3 2026 on October 15 and published it on
+[Tableau Public](https://public.tableau.com/app/profile/likhit.vardhan.chiliveri/viz/ChipotleFPA-2027MarginBudgetandQ32026Forecast/ChipotleFPA)
+on October 16, twelve days before Chipotle reported on October 28. The
+dashboard's publish date is the record of that; this repo went up after the
+results. Restaurant-level margin came in at 23.3% against my 23.4%, and EPS at
+$0.27, as forecast.
 
 This is an independent analysis of public SEC filings. I'm not affiliated with
 Chipotle, and nothing here is investment advice.
@@ -19,6 +21,7 @@ Chipotle, and nothing here is investment advice.
   (start on the Cover tab; switch scenarios on Assumptions)
 - **One-page memo:** [`docs/memo_2027_budget.md`](docs/memo_2027_budget.md)
 - **Q3 forecast and reasoning:** [`docs/q3_2026_forecast.md`](docs/q3_2026_forecast.md)
+- **Q3 variance write-up:** [`docs/q3_2026_variance.md`](docs/q3_2026_variance.md)
 - **KPI tree and definitions:** [`docs/kpi_tree.md`](docs/kpi_tree.md)
 - **Dashboard:** [Tableau Public](https://public.tableau.com/app/profile/likhit.vardhan.chiliveri/viz/ChipotleFPA-2027MarginBudgetandQ32026Forecast/ChipotleFPA)
   (workbook in [`tableau/`](tableau/))
@@ -27,12 +30,26 @@ Chipotle, and nothing here is investment advice.
 
 ## Q3 2026 scorecard
 
-| | My forecast | Chipotle's guidance | Actual | Variance |
+| | My forecast (Oct 15) | Chipotle's guidance (Jul 29) | Actual (Oct 28) | Variance |
 |---|---|---|---|---|
-| Comparable sales | +1.0% | about +1% | *Oct 28* | |
-| Revenue | $3,263M | | | |
-| Restaurant-level margin | 23.4% | ~23.6% implied | | |
-| Diluted EPS | $0.27 | | | |
+| Comparable sales | +1.0% | about +1% | +2.1% | +112 bps |
+| Revenue | $3,263M | | $3,293M | +0.9% |
+| Restaurant-level margin | 23.4% | ~23.6% implied | 23.3% | -7 bps |
+| Diluted EPS | $0.27 | | $0.27 | -$0.004 |
+
+The margin was close partly by luck: traffic beat my forecast (+0.8% vs -1.1%)
+while average check fell short (+1.3% vs +2.1%), and food came in 40 bps
+better while marketing and delivery came in 39 bps worse. The line-by-line
+explanation is in [`docs/q3_2026_variance.md`](docs/q3_2026_variance.md).
+
+I also checked the driver model against two forecasts that only use past
+quarters. It was the most accurate on both revenue and margin:
+
+| Q3 2026 forecast | Revenue error | Margin error |
+|---|---|---|
+| Driver model (Oct 15) | -0.9% | 7 bps |
+| Holt-Winters | -1.1% | 24 bps |
+| Seasonal naive | -2.1% | 117 bps |
 
 ## What I found
 
@@ -105,11 +122,11 @@ backed out of the filings. One cell switches between Base, Upside and Downside.
 
 ## Checking the numbers
 
-The 22 quarters of history tie to the earnings releases line by line (447
+The 23 quarters of history tie to the earnings releases line by line (468
 checks in `src/check_data.py`), my restaurant-level margin matches the one
-Chipotle reports in all 20 quarters where it states one, and the workbook's own
-Checks tab must read ALL CHECKS PASS. I also rebuilt the Base forecast
-separately in Python; it matches the Excel output exactly. Details and
+Chipotle reports in all 21 quarters where it states one, and the workbook's own
+Checks tab must read ALL CHECKS PASS. For the Oct 15 budget I also rebuilt the
+Base forecast separately in Python, and it matched the Excel output exactly. Details and
 limitations: [`docs/data_and_checks.md`](docs/data_and_checks.md).
 
 ## Files
@@ -126,6 +143,8 @@ src/
   recalc.py           LibreOffice recalculation and formula-error scan
   make_charts.py      README charts
   make_tableau_data.py  data for the Tableau dashboard
+  baseline_forecast.py  statistical Q3 forecasts to compare against
+  score_forecast.py   Q3 forecast vs actual
 data/processed/       tidy CSVs used by the model
 model/                the Excel model
 output/               locked Q3 forecast, quarterly model output, scenarios, levers

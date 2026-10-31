@@ -12,20 +12,20 @@ in the scorecard below. I won't change the forecast after that.
 
 | Line | My forecast | What management said on Jul 29 | Actual |
 |---|---|---|---|
-| Comparable sales | +1.0% | "somewhere around a plus 1%" | |
-| Transactions | -1.1% | | |
-| Average check | +2.1% | menu price "mid-2% range" | |
-| Restaurants opened | 85 | ~350 for the year | |
-| Restaurants at end of quarter | 4,267 | | |
-| Revenue | $3,263M (+8.6% y/y) | | |
-| Food, beverage and packaging | 29.9% of revenue | "just under 30%" | |
-| Labor | 25.6% | "mid-25% range" | |
-| Occupancy | 5.5% | not guided | |
-| Other operating costs | 15.6% | "mid-15% range" | |
-| Restaurant-level margin | 23.4% | about 23.6% implied | |
-| G&A (GAAP) | $190M | ~$180M non-GAAP | |
-| Operating margin | 13.8% | | |
-| Diluted EPS | $0.27 | | |
+| Comparable sales | +1.0% | "somewhere around a plus 1%" | +2.1% |
+| Transactions | -1.1% | | +0.8% |
+| Average check | +2.1% | menu price "mid-2% range" | +1.3% |
+| Restaurants opened | 85 | ~350 for the year | 84 |
+| Restaurants at end of quarter | 4,267 | | 4,267 |
+| Revenue | $3,263M (+8.6% y/y) | | $3,293M (+9.6% y/y) |
+| Food, beverage and packaging | 29.9% of revenue | "just under 30%" | 29.5% |
+| Labor | 25.6% | "mid-25% range" | 25.7% |
+| Occupancy | 5.5% | not guided | 5.4% |
+| Other operating costs | 15.6% | "mid-15% range" | 16.0% |
+| Restaurant-level margin | 23.4% | about 23.6% implied | 23.3% |
+| G&A (GAAP) | $190M | ~$180M non-GAAP | $185M |
+| Operating margin | 13.8% | | 13.7% |
+| Diluted EPS | $0.27 | | $0.27 |
 
 ## How I got there
 
@@ -65,11 +65,13 @@ the share count from buybacks.
 - **One-off G&A.** Items that Chipotle strips out of adjusted G&A added $12M in
   Q2 2025 and $14M in Q2 2026. A swing of that size is about $0.01 of EPS.
 
-## Scorecard (filled in after October 28)
+## Scorecard (filled in Oct 30, after the Oct 28 release)
 
 | | Forecast | Actual | Variance | Main reason |
 |---|---|---|---|---|
-| Revenue | $3,263M | | | |
-| Comparable sales | +1.0% | | | |
-| Restaurant-level margin | 23.4% | | | |
-| Diluted EPS | $0.27 | | | |
+| Revenue | $3,263M | $3,293M | +0.9% | Traffic +0.8% instead of -1.1% |
+| Comparable sales | +1.0% | +2.1% | +112 bps | Traffic beat; check +1.3% vs my +2.1% (heavier promotions) |
+| Restaurant-level margin | 23.4% | 23.3% | -7 bps | Food 40 bps better, other operating 39 bps worse |
+| Diluted EPS | $0.27 | $0.27 | -$0.004 | Lower interest income and a higher tax rate |
+
+Full write-up: [`q3_2026_variance.md`](q3_2026_variance.md).

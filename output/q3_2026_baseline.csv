@@ -1,0 +1,3 @@
+method,revenue_m,restaurant_margin,note
+Seasonal naive,3222.971698981493,0.24491317301071702,Q3 2025 x trailing 4-quarter growth (7.3%); margin = Q3 2025
+Holt-Winters,3255.3684089427866,0.2356708246262415,additive trend; multiplicative (revenue) / additive (margin) seasonality; default fit
