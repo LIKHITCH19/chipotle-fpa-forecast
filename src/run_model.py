@@ -138,7 +138,7 @@ def main():
     for name in ("Base", "Upside", "Downside"):
         s = res[name]["scenarios"]
         print(f"  {name:8} FY26 RLM {s['FY2026E restaurant-level margin']:.2%}  FY27 RLM {s['FY2027E restaurant-level margin']:.2%}"
-              f"  FY27 EPS ${s['FY2027E diluted EPS']:.2f}  Q3 EPS ${s['Q3 2026 diluted EPS']:.3f}"
+              f"  FY27 EPS ${s['FY2027E diluted EPS']:.2f}"
               f"  to get back to FY25 margin: tx {res[name]['needed_tx']} or check {res[name]['needed_ck']}")
         print("           levers (bps):", {k: round(v) for k, v in res[name]["levers"].items()})
 

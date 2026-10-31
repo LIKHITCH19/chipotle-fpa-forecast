@@ -84,10 +84,13 @@ units = pd.read_csv(PROC / "cmg_units_quarterly.csv").set_index("quarter")
 split = pd.read_csv(PROC / "cmg_comps_split.csv").set_index("quarter")
 peers = pd.read_csv(PROC / "peers_ltm.csv")
 
-HIST_Q = list(pnl.index)                      # 2021Q1 .. 2026Q2 (22)
-assert HIST_Q[0] == "2021Q1" and HIST_Q[-1] == "2026Q2", HIST_Q
-FCST_Q = ["2026Q3", "2026Q4", "2027Q1", "2027Q2", "2027Q3", "2027Q4"]
-MODEL_Q = HIST_Q[-6:] + FCST_Q                # 2025Q1 .. 2027Q4 (12)
+HIST_Q = list(pnl.index)                      # 2021Q1 .. latest reported quarter
+assert HIST_Q[0] == "2021Q1" and HIST_Q[-1] >= "2026Q2", HIST_Q
+# The forecast runs to Q4 2027 from whatever quarter comes after the last one
+# reported. Oct 15 budget: Q3 2026 to Q4 2027. Oct 30 reforecast: Q4 2026 on.
+FCST_Q = [q for q in ["2026Q3", "2026Q4", "2027Q1", "2027Q2", "2027Q3", "2027Q4"] if q not in HIST_Q]
+MODEL_Q = HIST_Q[HIST_Q.index("2025Q1"):] + FCST_Q   # 2025Q1 .. 2027Q4 (12)
+LAST_A, FIRST_F = HIST_Q[-1], FCST_Q[0]
 
 
 def qname(q):
@@ -105,8 +108,10 @@ MCOL = {q: L(3 + i) for i, q in enumerate(MODEL_Q)}
 M_YEARS = {"FY2025A": "P", "FY2026E": "Q", "FY2027E": "R"}
 M_YEAR_Q = {"FY2025A": MODEL_Q[0:4], "FY2026E": MODEL_Q[4:8], "FY2027E": MODEL_Q[8:12]}
 
-# Assumptions layout: forecast quarters in E..J
+# Assumptions layout: forecast quarters from column E
 ACOL = {q: L(5 + i) for i, q in enumerate(FCST_Q)}
+A27, A27_END = ACOL["2027Q1"], ACOL["2027Q4"]   # 2027 columns on Assumptions
+A_WHY = L(5 + len(FCST_Q) + 1)                   # the "Why this number" column
 
 wb = Workbook()
 
@@ -118,7 +123,7 @@ title(cv, "Chipotle Mexican Grill: 2027 budget and Q3 2026 forecast model",
 lines = [
     ("What this model answers", True),
     ("How much restaurant-level margin Chipotle can recover in 2027, and which lever (traffic, price, food cost, labor) matters most.", False),
-    ("It also holds a Q3 2026 forecast, made before Chipotle reported (Oct 28, 2026), to be scored against the actual results.", False),
+    ("It also holds a Q3 2026 forecast, made on Oct 15 before Chipotle reported (Oct 28, 2026), scored against the actual results on Q3_Forecast.", False),
     ("", False),
     ("How to use it", True),
     ("1. Pick a scenario on the Assumptions tab (cell C4: 1 = Base, 2 = Upside, 3 = Downside). Every tab updates.", False),
@@ -127,8 +132,8 @@ lines = [
     ("", False),
     ("Tabs", True),
     ("Assumptions - scenario selector and every forecast input, with the reason for each number", False),
-    ("Model - quarterly drivers, restaurant P&L and EPS: actuals Q1 2025 to Q2 2026, forecast Q3 2026 to Q4 2027", False),
-    ("Hist - 22 quarters of reported results (Q1 2021 to Q2 2026) as filed, plus derived ratios", False),
+    (f"Model - quarterly drivers, restaurant P&L and EPS: actuals Q1 2025 to {qname(LAST_A)}, forecast {qname(FIRST_F)} to Q4 2027", False),
+    (f"Hist - {len(HIST_Q)} quarters of reported results (Q1 2021 to {qname(LAST_A)}) as filed, plus derived ratios", False),
     ("Q3_Forecast - the locked Q3 2026 forecast, management's commentary, and space for the actuals and variance", False),
     ("Margin_Bridge - what moved restaurant-level margin, cost line by cost line", False),
     ("Sensitivity - 2027 margin under different traffic, price, food and wage assumptions", False),
@@ -141,10 +146,10 @@ lines = [
     ("Shaded columns on Model = forecast periods.  $ figures are in thousands unless a label says otherwise.", False),
     ("", False),
     ("Sources", True),
-    ("SEC EDGAR: Chipotle 10-Q/10-K XBRL facts and quarterly earnings releases (8-K exhibit 99.1), Q1 2021 to Q2 2026.", False),
+    (f"SEC EDGAR: Chipotle 10-Q/10-K XBRL facts and quarterly earnings releases (8-K exhibit 99.1), Q1 2021 to {qname(LAST_A)}.", False),
     ("SEC EDGAR: CAVA, Sweetgreen and Shake Shack XBRL facts for the peer comparison.", False),
     ("U.S. Bureau of Labor Statistics: average hourly earnings in food services (CES7072200003), ground beef price (APU0000703112), CPI food away from home (CUSR0000SEFV).", False),
-    ("Chipotle Q2 2026 earnings call (Jul 29, 2026) for management's Q3 commentary.", False),
+    ("Chipotle Q2 2026 earnings call (Jul 29, 2026) for management's Q3 commentary; Q3 2026 call (Oct 28, 2026) for the Q4 2026 and 2027 reforecast.", False),
 ]
 r = 4
 for text, bold in lines:
@@ -154,7 +159,7 @@ cv.column_dimensions["A"].width = 130
 
 # ================================================================= Assumptions
 a = wb.create_sheet("Assumptions")
-title(a, "Assumptions", "Blue = input. Change the scenario in C4. Forecast quarters run across columns E to J.")
+title(a, "Assumptions", f"Blue = input. Change the scenario in C4. Forecast quarters run across columns E to {ACOL[FCST_Q[-1]]}.")
 put(a, "A4", "Scenario in use (1 Base, 2 Upside, 3 Downside)", bold=True)
 put(a, "C4", 1, color=BLUE, bold=True, fill=FILL_KEY, align="center")
 put(a, "D4", '=INDEX({"Base","Upside","Downside"},C4)', bold=True)
@@ -165,50 +170,54 @@ note(a, "C4", "1 = Base, 2 = Upside, 3 = Downside. Every forecast cell reads the
 
 header_row(a, 6, ["Driver", "", "Unit", ""] + [qname(q) for q in FCST_Q] + ["", "Why this number"], 1)
 
+# Reforecast of Oct 30, 2026 (after Q3 results). The Oct 15 budget's inputs
+# are in the git history and in output/budget_oct15/.
 scen = {
     "Transactions growth, y/y": dict(
         unit="%", rows={
-            "Base": [-0.011, 0.005, 0.010, 0.010, 0.015, 0.015],
-            "Upside": [-0.005, 0.015, 0.025, 0.025, 0.030, 0.030],
-            "Downside": [-0.020, -0.015, -0.015, -0.010, -0.010, -0.005]},
-        why="Q3: management guided comps of about +1% with pricing in the mid-2% range (Jul 29 call), which leaves "
-            "transactions near -1%. Q4 laps a -3.2% quarter. 2027 assumes a slow recovery, not a return to 2024's +5%."),
+            "Base": [0.000, 0.015, 0.015, 0.015, 0.015],
+            "Upside": [0.005, 0.025, 0.025, 0.025, 0.025],
+            "Downside": [-0.010, 0.000, 0.000, 0.005, 0.005]},
+        why="Q3 transactions were +0.8%, the third positive quarter. Q4: management guided comps of about +2% with "
+            "price near 3% and said October softened, so transactions are taken as flat. 2027 assumes +1.5%, a slow "
+            "recovery; management called the exit rate 3-4% comps but gave no 2027 guide."),
     "Average check growth, y/y": dict(
         unit="%", rows={
-            "Base": [0.021, 0.020, 0.020, 0.020, 0.020, 0.020],
-            "Upside": [0.023, 0.025, 0.030, 0.030, 0.025, 0.025],
-            "Downside": [0.018, 0.015, 0.010, 0.010, 0.010, 0.010]},
-        why="Menu price of ~2.5% in Q3 less ~0.4 pt of mix (Q2: price 1.6%, check 1.2%). 2027 assumes ~2% check growth: "
-            "Chipotle is keeping prices below the industry (CPI food away from home +3.5% y/y, Sep 2026) to win back traffic."),
+            "Base": [0.020, 0.015, 0.015, 0.015, 0.015],
+            "Upside": [0.023, 0.020, 0.020, 0.020, 0.020],
+            "Downside": [0.018, 0.010, 0.010, 0.010, 0.010]},
+        why="Q3: price 2.7% but check only +1.3%, so promotions and mix took ~1.4 pts. Q4: price ~3% (Oct 28 call) "
+            "less ~1 pt of mix. 2027: management said pricing near 2% is 'just not looking like' it will happen, so "
+            "check growth is set at 1.5%."),
     "Food cost inflation per transaction": dict(
         unit="%", rows={
-            "Base": [0.017, 0.020, 0.025, 0.020, 0.015, 0.015],
-            "Upside": [0.012, 0.015, 0.015, 0.010, 0.010, 0.010],
-            "Downside": [0.025, 0.030, 0.035, 0.030, 0.025, 0.025]},
-        why="Beef is the main pressure: BLS ground beef $6.79/lb in Sep 2026, +7.4% y/y and +19.8% over two years. "
-            "Partly offset by lower avocado and dairy. Q3 base is set so food cost lands near management's 'just under 30%'."),
+            "Base": [0.030, 0.025, 0.020, 0.020, 0.020],
+            "Upside": [0.025, 0.015, 0.010, 0.010, 0.010],
+            "Downside": [0.035, 0.035, 0.030, 0.030, 0.030]},
+        why="Q4: management put underlying cost of sales inflation at ~3% and food at ~30.5% of sales. 2027: "
+            "'low to mid-single-digit' inflation; beef is still the main pressure (BLS ground beef +7.4% y/y, Sep 2026)."),
     "Restaurant wage inflation": dict(
         unit="%", rows={
-            "Base": [0.025, 0.025, 0.030, 0.030, 0.030, 0.030],
-            "Upside": [0.020, 0.020, 0.025, 0.025, 0.025, 0.025],
-            "Downside": [0.035, 0.040, 0.045, 0.045, 0.045, 0.045]},
-        why="Management: wage inflation 'low single digit' in Q3. Backing out Chipotle's labor cost per restaurant gives "
-            "2-4% in H1 2026. BLS food-service hourly earnings run hotter (+4.3% y/y, Aug 2026), hence the Downside."),
+            "Base": [0.035, 0.030, 0.030, 0.030, 0.030],
+            "Upside": [0.025, 0.025, 0.025, 0.025, 0.025],
+            "Downside": [0.045, 0.045, 0.045, 0.045, 0.045]},
+        why="Q3 labor came in at 25.7% with extra hours for promotions. Q4 is set so labor lands near management's "
+            "'around 26%'. BLS food-service hourly earnings are up 4.3% y/y (Aug 2026), hence the Downside."),
     "Other operating cost growth per restaurant": dict(
         unit="%", rows={
-            "Base": [0.050, 0.045, 0.035, 0.035, 0.035, 0.035],
-            "Upside": [0.040, 0.035, 0.025, 0.025, 0.025, 0.025],
-            "Downside": [0.060, 0.060, 0.050, 0.050, 0.050, 0.050]},
-        why="Marketing, delivery fees, utilities and repairs: up 6-9% per restaurant in each of the last five quarters as "
-            "marketing stepped up. Management guided Q3 to the mid-15% range of sales. 2027 assumes the step-up is lapped."),
+            "Base": [0.060, 0.035, 0.035, 0.035, 0.035],
+            "Upside": [0.050, 0.025, 0.025, 0.025, 0.025],
+            "Downside": [0.070, 0.050, 0.050, 0.050, 0.050]},
+        why="Q3 other operating was 16.0% (marketing, delivery mix, utilities, maintenance). Q4 guide ~16% with "
+            "marketing in the high-3% range. Management sees ~3% marketing as the right level for 2027, so growth slows."),
 }
 INUSE = {}   # driver -> row number of the 'In use' row
 r = 7
 for name, spec in scen.items():
     put(a, f"A{r}", name, bold=True)
-    put(a, f"L{r}", spec["why"], italic=True)
-    a[f"L{r}"].alignment = Alignment(wrap_text=True, vertical="top")
-    a.merge_cells(f"L{r}:L{r + 3}")
+    put(a, f"{A_WHY}{r}", spec["why"], italic=True)
+    a[f"{A_WHY}{r}"].alignment = Alignment(wrap_text=True, vertical="top")
+    a.merge_cells(f"{A_WHY}{r}:{A_WHY}{r + 3}")
     start = r
     for k, (sname, vals) in enumerate(spec["rows"].items()):
         rr = r + k
@@ -229,32 +238,32 @@ for name, spec in scen.items():
 put(a, f"A{r}", "Same in every scenario", bold=True)
 r += 1
 common = [
-    ("Restaurant openings (company-owned)", "#", [85, 120, 60, 70, 95, 140], NUM,
-     "2026: management expects ~350 openings (Q2 call); 149 opened in H1, so ~205 in H2, back-end loaded like 2025 "
-     "(Q3 84, Q4 132). 2027: ~365, about 8.5% unit growth, Chipotle's long-run 8-10% target."),
-    ("Closures and relocations (net)", "#", [-4] * 6, NUM, "Average of the last eight quarters (-4.1 per quarter)."),
-    ("Non-comp revenue effect", "%", [-0.013] * 6, PCT,
+    ("Restaurant openings (company-owned)", "#", [117, 60, 70, 90, 130], NUM,
+     "2026: management expects ~350 company-owned openings; 233 opened in Q1-Q3, leaving ~117 for Q4. 2027: "
+     "340-360 in the U.S. and Canada (Oct 28), taken as 350, back-end loaded like 2026."),
+    ("Closures and relocations (net)", "#", [-4] * 5, NUM, "Average of the last eight quarters (about -4 per quarter)."),
+    ("Non-comp revenue effect", "%", [-0.013] * 5, PCT,
      "Revenue per average restaurant grows ~1.3 pts slower than comps because new restaurants open below the "
-     "system average (Hist row 46: -0.8 to -1.8 pts, average -1.3 over the last eight quarters)."),
-    ("Occupancy cost growth per restaurant", "%", [0.04] * 6, PCT,
-     "Rent escalators plus newer Chipotlane sites. Backed out from the filings: 4.7% in Q1 2026, 4.0% in Q2 2026."),
-    ("Labor: share of hours that is fixed", "x", [0.5] * 6, '0.00',
-     "Half of labor hours don't move with traffic (minimum crew per shift). With 0.5 and 2.5% wage inflation, the "
-     "model lands on management's 'mid-25%' Q3 labor guide."),
-    ("Other operating: share that is fixed", "x", [0.4] * 6, '0.00',
+     "system average (Hist: about -1.3 pts on average over the last eight quarters; -1.5 in Q3 2026)."),
+    ("Occupancy cost growth per restaurant", "%", [0.04] * 5, PCT,
+     "Rent escalators plus newer Chipotlane sites. Backed out from the filings: 4.0% in Q2 2026, 3.9% in Q3 2026."),
+    ("Labor: share of hours that is fixed", "x", [0.5] * 5, '0.00',
+     "Half of labor hours don't move with traffic (minimum crew per shift). Unchanged from the Oct 15 budget, "
+     "which got Q3 labor within 13 bps."),
+    ("Other operating: share that is fixed", "x", [0.4] * 5, '0.00',
      "Utilities, repairs and part of marketing are fixed; delivery fees and card fees move with sales."),
-    ("G&A ($000); blank = same quarter last year x (1 + G&A growth)", "$000", [190000, 180000, None, None, None, None], NUM,
-     "Q3: management guided ~$180M non-GAAP; GAAP has run ~$10-15M higher (legal, restructuring, retention stock "
-     "awards). 2027 grows from the 2026 quarter."),
-    ("G&A growth for blank quarters", "%", [0.04] * 6, PCT, "Wage inflation plus modest headcount growth."),
-    ("Depreciation and amortization, % of revenue", "%", [0.030] * 6, PCT, "2.9-3.1% for the last eight quarters."),
-    ("Pre-opening cost per opening ($000)", "$000", [165] * 6, NUM, "Last eight quarters averaged ~$165K per opening (Hist)."),
-    ("Impairment, closures and disposals ($000)", "$000", [10000] * 6, NUM, "Run rate of $8-14M per quarter in the last year."),
-    ("Interest and other income ($000)", "$000", [7500, 7000, 6500, 6500, 6500, 6500], NUM,
-     "Falling as cash and investments fund buybacks ($7.7M in Q2 2026, $18.4M a year earlier)."),
-    ("Effective tax rate", "%", [0.25] * 6, PCT, "Management guides an underlying 24-26% for 2026."),
-    ("Diluted share count change, q/q", "%", [-0.012, -0.012, -0.010, -0.010, -0.010, -0.010], PCT,
-     "Buybacks cut the share count 1.4-1.7% per quarter in H1 2026; slower in 2027 as cash runs down."),
+    ("G&A ($000); blank = same quarter last year x (1 + G&A growth)", "$000", [191000, 193000, 193000, 193000, 193000], NUM,
+     "Q4: management guided ~$189M non-GAAP; GAAP adds ~$1.5M of retention stock awards. 2027: the H2 2026 "
+     "non-GAAP run rate (~$186M a quarter) plus ~4% for wages and headcount."),
+    ("G&A growth for blank quarters", "%", [0.04] * 5, PCT, "Only used if a G&A cell above is left blank."),
+    ("Depreciation and amortization, % of revenue", "%", [0.031] * 5, PCT, "3.0-3.1% for the last four quarters."),
+    ("Pre-opening cost per opening ($000)", "$000", [170] * 5, NUM, "About $164K per opening in Q2 2026 and $180K in Q3."),
+    ("Impairment, closures and disposals ($000)", "$000", [12000] * 5, NUM, "$13-14M a quarter in Q2 and Q3 2026."),
+    ("Interest and other income ($000)", "$000", [5000, 4500, 4500, 4500, 4500], NUM,
+     "Falling as cash and investments fund buybacks ($5.2M in Q3 2026, $19.8M a year earlier)."),
+    ("Effective tax rate", "%", [0.25] * 5, PCT, "Management guides an underlying 24-26% for 2026 (Q3 was 25.6%)."),
+    ("Diluted share count change, q/q", "%", [-0.008] * 5, PCT,
+     "Buybacks slowed: $110M in Q3 2026, and the diluted count fell 0.9% from Q2. Assumed -0.8% a quarter."),
 ]
 COMMON = {}
 for name, unit, vals, fmt, why in common:
@@ -265,8 +274,8 @@ for name, unit, vals, fmt, why in common:
             put(a, f"{ACOL[q]}{r}", v, color=BLUE, fmt=fmt)
         else:
             a[f"{ACOL[q]}{r}"].number_format = fmt
-    put(a, f"L{r}", why, italic=True)
-    a[f"L{r}"].alignment = Alignment(wrap_text=True, vertical="top")
+    put(a, f"{A_WHY}{r}", why, italic=True)
+    a[f"{A_WHY}{r}"].alignment = Alignment(wrap_text=True, vertical="top")
     COMMON[name] = r
     r += 1
 for k in ("Restaurant openings (company-owned)",):
@@ -279,8 +288,8 @@ a.column_dimensions["C"].width = 6
 a.column_dimensions["D"].width = 2
 for q in FCST_Q:
     a.column_dimensions[ACOL[q]].width = 11
-a.column_dimensions["K"].width = 2
-a.column_dimensions["L"].width = 95
+a.column_dimensions[L(5 + len(FCST_Q))].width = 2
+a.column_dimensions[A_WHY].width = 95
 a.freeze_panes = "E7"
 
 AREF = lambda name, q: f"Assumptions!{ACOL[q]}${INUSE[name]}" if name in INUSE else f"Assumptions!{ACOL[q]}${COMMON[name]}"
@@ -637,13 +646,33 @@ m.freeze_panes = "C6"
 
 # ================================================================ Q3_Forecast
 f3 = wb.create_sheet("Q3_Forecast")
+Q3_REPORTED = "2026Q3" in HIST_Q
 title(f3, "Q3 2026: forecast vs actual",
-      "Locked forecast = the Base case saved before Chipotle reported on Oct 28, 2026. "
-      "Type the actuals into column F after the release; variance fills in.")
-header_row(f3, 4, ["Line", "Unit", "Live model (scenario in use)", "Locked forecast (Base)",
-                   "Management commentary (Jul 29 call)", "Actual (enter after Oct 28)", "Variance (actual - forecast)",
+      "Locked forecast = the Base case saved on Oct 15, 2026, before Chipotle reported on Oct 28. "
+      + ("Actuals link to the Model (from the 10-Q and earnings release)." if Q3_REPORTED else
+         "Type the actuals into column F after the release; variance fills in."))
+header_row(f3, 4, ["Line", "Unit", "Model now (scenario in use)", "Locked forecast (Base)",
+                   "Management commentary (Jul 29 call)", "Actual (reported Oct 28)", "Variance (actual - forecast)",
                    "What explains the gap"], 1)
 q3 = MCOL["2026Q3"]
+# short reasons, from docs/q3_2026_variance.md
+GAP = {
+    "comps": "Traffic turned positive (+0.8%) instead of falling; check was weaker.",
+    "tx": "Third straight quarter of positive transactions; I assumed the cyclospora hit would hold traffic down.",
+    "check": "Price was 2.7% as guided, but mix took off ~1.4 pts (promotions, LTO mix).",
+    "opened": "One fewer opening than forecast.",
+    "rev2": "All from sales per restaurant; restaurant count was exactly right.",
+    "food_pct": "Tariff relief and favourable LTO mix, not in my assumptions.",
+    "labor_pct": "Extra labor for promotions and insurance costs.",
+    "occ_pct": "Higher sales spread the fixed rent.",
+    "oth_pct": "Marketing and delivery mix ran above the mid-15% guide.",
+    "rlm": "Food and other operating gaps nearly cancelled out.",
+    "ga": "GAAP one-offs were smaller than in Q2.",
+    "oi": "Higher revenue offset by a slightly lower margin.",
+    "opm": "",
+    "ni": "Lower interest income and a 25.6% tax rate vs my 25%.",
+    "eps": "Same as net income; share count close to forecast.",
+}
 F3 = [
     ("Comparable sales growth", "%", "comps", PCT, "about +1%"),
     ("Transactions growth", "%", "tx", PCT, ""),
@@ -672,9 +701,13 @@ for i, (label, unit, key, fmt, mgmt) in enumerate(F3):
     f3[f"D{rr}"].number_format = fmt          # filled with values by run_model.py
     f3[f"D{rr}"].font = font(BLUE, bold=True)
     put(f3, f"E{rr}", mgmt, color=GREY, italic=True)
-    f3[f"F{rr}"].number_format = fmt
-    f3[f"F{rr}"].font = font(BLUE)
-    f3[f"F{rr}"].fill = FILL_KEY
+    if Q3_REPORTED:
+        put(f3, f"F{rr}", f"=Model!{q3}{MR[key]}", color=GREEN, fmt=fmt)
+        put(f3, f"H{rr}", GAP.get(key, ""), italic=True)
+    else:
+        f3[f"F{rr}"].number_format = fmt
+        f3[f"F{rr}"].font = font(BLUE)
+        f3[f"F{rr}"].fill = FILL_KEY
     put(f3, f"G{rr}", f'=IF(F{rr}="","",F{rr}-D{rr})', fmt=(PCT2 if fmt == PCT else fmt))
 rr = 5 + len(F3) + 1
 put(f3, f"A{rr}", "Management's Q3 cost guidance implies a restaurant-level margin of about", italic=True)
@@ -682,14 +715,16 @@ put(f3, f"D{rr}", "=1-(0.299+0.255+D{0}+0.155)".format(F3ROW["occ_pct"]), fmt=PC
 note(f3, f"D{rr}", "Food 'just under 30%' taken as 29.9%, labor 'mid-25%' as 25.5%, other 'mid-15%' as 15.5%. "
      "Occupancy was not guided, so the locked forecast's occupancy % is used.")
 F3_IMPLIED = rr
-put(f3, f"A{rr + 2}", "Revenue variance split (fill after the release): restaurants vs revenue per restaurant", bold=True)
+put(f3, f"A{rr + 2}", "Revenue variance split: restaurants vs revenue per restaurant", bold=True)
 put(f3, f"A{rr + 3}", "From more/fewer average restaurants ($000)")
 put(f3, f"A{rr + 4}", "From higher/lower revenue per restaurant ($000)")
 put(f3, f"B{rr + 3}", "Actual avg restaurants")
 f3[f"C{rr + 3}"].font = font(BLUE)
 f3[f"C{rr + 3}"].fill = FILL_KEY
 note(f3, f"C{rr + 3}", "Enter (end of Q2 restaurants + end of Q3 restaurants) / 2 from the Q3 release.")
-put(f3, f"D{rr + 3}", f"=Model!{q3}{MR['avg_rest']}", color=GREEN, fmt=NUM1)
+if Q3_REPORTED:
+    put(f3, f"C{rr + 3}", f"=Model!{q3}{MR['avg_rest']}", color=GREEN, fmt=NUM1)
+put(f3, f"D{rr + 3}", f"=(Model!{MCOL['2026Q2']}{MR['rest_end']}+D{F3ROW['rest_end']})/2", fmt=NUM1)
 put(f3, f"G{rr + 3}", f'=IF(OR(C{rr + 3}="",F{F3ROW["rev2"]}=""),"",(C{rr + 3}-D{rr + 3})*D{rr + 5})', fmt=NUM)
 put(f3, f"G{rr + 4}", f'=IF(G{rr + 3}="","",G{F3ROW["rev2"]}-G{rr + 3})', fmt=NUM)
 put(f3, f"B{rr + 5}", "Forecast revenue per restaurant")
@@ -805,13 +840,13 @@ params = [
     ("FY2026E other operating %", f"=Model!Q{MR['oth_pct']}", PCT),
     ("2027 transactions growth", f"=AVERAGE(Model!K{MR['tx']}:N{MR['tx']})", PCT),
     ("2027 average check growth", f"=AVERAGE(Model!K{MR['check']}:N{MR['check']})", PCT),
-    ("2027 food cost inflation", f"=AVERAGE(Assumptions!G{INUSE['Food cost inflation per transaction']}:J{INUSE['Food cost inflation per transaction']})", PCT),
-    ("2027 wage inflation", f"=AVERAGE(Assumptions!G{INUSE['Restaurant wage inflation']}:J{INUSE['Restaurant wage inflation']})", PCT),
-    ("2027 occupancy growth per restaurant", f"=AVERAGE(Assumptions!G{COMMON['Occupancy cost growth per restaurant']}:J{COMMON['Occupancy cost growth per restaurant']})", PCT),
-    ("2027 other cost growth per restaurant", f"=AVERAGE(Assumptions!G{INUSE['Other operating cost growth per restaurant']}:J{INUSE['Other operating cost growth per restaurant']})", PCT),
-    ("Non-comp effect", f"=AVERAGE(Assumptions!G{COMMON['Non-comp revenue effect']}:J{COMMON['Non-comp revenue effect']})", PCT),
-    ("Labor fixed share", f"=Assumptions!G{COMMON['Labor: share of hours that is fixed']}", "0.00"),
-    ("Other operating fixed share", f"=Assumptions!G{COMMON['Other operating: share that is fixed']}", "0.00"),
+    ("2027 food cost inflation", f"=AVERAGE(Assumptions!{A27}{INUSE['Food cost inflation per transaction']}:{A27_END}{INUSE['Food cost inflation per transaction']})", PCT),
+    ("2027 wage inflation", f"=AVERAGE(Assumptions!{A27}{INUSE['Restaurant wage inflation']}:{A27_END}{INUSE['Restaurant wage inflation']})", PCT),
+    ("2027 occupancy growth per restaurant", f"=AVERAGE(Assumptions!{A27}{COMMON['Occupancy cost growth per restaurant']}:{A27_END}{COMMON['Occupancy cost growth per restaurant']})", PCT),
+    ("2027 other cost growth per restaurant", f"=AVERAGE(Assumptions!{A27}{INUSE['Other operating cost growth per restaurant']}:{A27_END}{INUSE['Other operating cost growth per restaurant']})", PCT),
+    ("Non-comp effect", f"=AVERAGE(Assumptions!{A27}{COMMON['Non-comp revenue effect']}:{A27_END}{COMMON['Non-comp revenue effect']})", PCT),
+    ("Labor fixed share", f"=Assumptions!{A27}{COMMON['Labor: share of hours that is fixed']}", "0.00"),
+    ("Other operating fixed share", f"=Assumptions!{A27}{COMMON['Other operating: share that is fixed']}", "0.00"),
 ]
 P = {}
 for i, (lab, f, fmt) in enumerate(params):
@@ -936,10 +971,10 @@ title(sc, "Scenario comparison",
       "(src/run_model.py). The 'Live' column follows the selector on Assumptions.")
 header_row(sc, 4, ["Output", "Live (scenario in use)", "Base", "Upside", "Downside"], 1)
 SC_ITEMS = [
-    ("Q3 2026 comparable sales", f"=Model!{MCOL['2026Q3']}{MR['comps']}", PCT),
-    ("Q3 2026 revenue ($000)", f"=Model!{MCOL['2026Q3']}{MR['rev2']}", NUM),
-    ("Q3 2026 restaurant-level margin", f"=Model!{MCOL['2026Q3']}{MR['rlm']}", PCT),
-    ("Q3 2026 diluted EPS", f"=Model!{MCOL['2026Q3']}{MR['eps']}", EPS),
+    (f"Next quarter ({qname(FIRST_F)}) comparable sales", f"=Model!{MCOL[FIRST_F]}{MR['comps']}", PCT),
+    (f"Next quarter ({qname(FIRST_F)}) revenue ($000)", f"=Model!{MCOL[FIRST_F]}{MR['rev2']}", NUM),
+    (f"Next quarter ({qname(FIRST_F)}) restaurant-level margin", f"=Model!{MCOL[FIRST_F]}{MR['rlm']}", PCT),
+    (f"Next quarter ({qname(FIRST_F)}) diluted EPS", f"=Model!{MCOL[FIRST_F]}{MR['eps']}", EPS),
     ("FY2026E revenue ($000)", f"=Model!Q{MR['rev2']}", NUM),
     ("FY2026E comparable sales (avg of quarters)", f"=Model!Q{MR['comps']}", PCT),
     ("FY2026E restaurant-level margin", f"=Model!Q{MR['rlm2']}", PCT),
@@ -971,7 +1006,7 @@ for i, name in enumerate(scen):
     first = INUSE[name] - 3
     put(sc, f"A{r2}", name)
     for j, c in enumerate("CDE"):
-        put(sc, f"{c}{r2}", f"=AVERAGE(Assumptions!G{first + j}:J{first + j})", color=GREEN, fmt=PCT)
+        put(sc, f"{c}{r2}", f"=AVERAGE(Assumptions!{A27}{first + j}:{A27_END}{first + j})", color=GREEN, fmt=PCT)
 sc.column_dimensions["A"].width = 46
 for c in "BCDE":
     sc.column_dimensions[c].width = 20
@@ -987,7 +1022,7 @@ cols = ["Company", "LTM ending", "Revenue ($M)", "Revenue a year earlier ($M)", 
         "Labor ($M)", "Occupancy ($M)", "Other operating ($M)", "Notes"]
 header_row(pe, 4, cols, 1)
 notes = {
-    "CMG": "Q3 2025 to Q2 2026.",
+    "CMG": f"Four quarters to {qname(LAST_A)}.",
     "CAVA": "CAVA's Q1 is 16 weeks; LTM built as last fiscal year + YTD - prior YTD.",
     "SG": "Only total restaurant operating costs are tagged in XBRL, so the cost lines are not split.",
     "SHAK": "Food & paper is not in the standard tags, so the margin can't be rebuilt. Revenue includes licensing; "
@@ -1072,16 +1107,16 @@ checks = [
      f"=Hist!{HYCOL[2025]}{HROW['revenue']}-SUM(Hist!{HCOL['2025Q1']}{HROW['revenue']}:{HCOL['2025Q4']}{HROW['revenue']})",
      "=IF(ABS(B{r})<1,\"PASS\",\"FAIL\")"),
     ("Model: actual quarters tie to Hist revenue ($000)",
-     f"=SUM(Model!{MCOL['2025Q1']}{MR['rev2']}:{MCOL['2026Q2']}{MR['rev2']})-SUM(Hist!{HCOL['2025Q1']}{HROW['revenue']}:{HCOL['2026Q2']}{HROW['revenue']})",
+     f"=SUM(Model!{MCOL['2025Q1']}{MR['rev2']}:{MCOL[LAST_A]}{MR['rev2']})-SUM(Hist!{HCOL['2025Q1']}{HROW['revenue']}:{HCOL[LAST_A]}{HROW['revenue']})",
      "=IF(ABS(B{r})<1,\"PASS\",\"FAIL\")"),
     ("Model: actual quarters tie to Hist net income ($000)",
-     f"=SUM(Model!{MCOL['2025Q1']}{MR['ni']}:{MCOL['2026Q2']}{MR['ni']})-SUM(Hist!{HCOL['2025Q1']}{HROW['net_income']}:{HCOL['2026Q2']}{HROW['net_income']})",
+     f"=SUM(Model!{MCOL['2025Q1']}{MR['ni']}:{MCOL[LAST_A]}{MR['ni']})-SUM(Hist!{HCOL['2025Q1']}{HROW['net_income']}:{HCOL[LAST_A]}{HROW['net_income']})",
      "=IF(ABS(B{r})<1,\"PASS\",\"FAIL\")"),
-    ("Model: forecast restaurants roll forward (Q4 2027 end - Q2 2026 end - openings - closures)",
-     f"=Model!{MCOL['2027Q4']}{MR['rest_end']}-Model!{MCOL['2026Q2']}{MR['rest_end']}-SUM(Model!{MCOL['2026Q3']}{MR['opened']}:{MCOL['2027Q4']}{MR['opened']})-SUM(Model!{MCOL['2026Q3']}{MR['closures']}:{MCOL['2027Q4']}{MR['closures']})",
+    (f"Model: forecast restaurants roll forward (Q4 2027 end - {qname(LAST_A)} end - openings - closures)",
+     f"=Model!{MCOL['2027Q4']}{MR['rest_end']}-Model!{MCOL[LAST_A]}{MR['rest_end']}-SUM(Model!{MCOL[FIRST_F]}{MR['opened']}:{MCOL['2027Q4']}{MR['opened']})-SUM(Model!{MCOL[FIRST_F]}{MR['closures']}:{MCOL['2027Q4']}{MR['closures']})",
      "=IF(ABS(B{r})<0.001,\"PASS\",\"FAIL\")"),
     ("Model: forecast revenue = average restaurants x revenue per restaurant ($000)",
-     f"=SUMPRODUCT(Model!{MCOL['2026Q3']}{MR['avg_rest']}:{MCOL['2027Q4']}{MR['avg_rest']},Model!{MCOL['2026Q3']}{MR['rpr']}:{MCOL['2027Q4']}{MR['rpr']})-SUM(Model!{MCOL['2026Q3']}{MR['rev2']}:{MCOL['2027Q4']}{MR['rev2']})",
+     f"=SUMPRODUCT(Model!{MCOL[FIRST_F]}{MR['avg_rest']}:{MCOL['2027Q4']}{MR['avg_rest']},Model!{MCOL[FIRST_F]}{MR['rpr']}:{MCOL['2027Q4']}{MR['rpr']})-SUM(Model!{MCOL[FIRST_F]}{MR['rev2']}:{MCOL['2027Q4']}{MR['rev2']})",
      "=IF(ABS(B{r})<1,\"PASS\",\"FAIL\")"),
     ("Model: margin from % lines equals margin from $ lines (max gap)",
      f"=SUMPRODUCT(MAX(ABS(Model!{MCOL['2025Q1']}{MR['rlm']}:{MCOL['2027Q4']}{MR['rlm']}-Model!{MCOL['2025Q1']}{MR['rlm2']}:{MCOL['2027Q4']}{MR['rlm2']})))",

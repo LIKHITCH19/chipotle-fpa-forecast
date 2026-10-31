@@ -5,6 +5,21 @@
 **Re:** 2027 budget, restaurant-level margin
 **Model:** [`model/chipotle_fpa_model.xlsx`](../model/chipotle_fpa_model.xlsx)
 
+### Update after Q3 results (Oct 30)
+
+Q3 came in as forecast at the margin line (23.3% vs my 23.4%), but the mix
+underneath changed: traffic recovered, and promotions ate more of the price
+than I expected. After rolling the model forward, the Base case for 2027 is
+**22.4%**, down from 23.1% in the memo below. Management called a mid-24%
+margin the 2027 baseline, but that assumes pricing keeps up with ~3% cost
+inflation, and on the same call they said 2% pricing looks unlikely. The
+recommendations below still stand. The case for testing price has got
+stronger, and other operating costs (16.0% of sales in Q3) are now the
+clearest place to look for savings. Details: [`q3_2026_variance.md`](q3_2026_variance.md)
+and the README's reforecast section.
+
+The memo as written on Oct 15 follows.
+
 ### Bottom line
 
 Plan 2027 restaurant-level margin at **about 23%**, not a return to the 26-27%

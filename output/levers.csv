@@ -1,21 +1,21 @@
 scenario,lever,fy2027_margin_change_bps
-Base,Transactions growth +1 pt,24.2
-Base,Average check (price) +1 pt,74.7
-Base,Food cost inflation -1 pt,29.3
-Base,Wage inflation -1 pt,25.1
-Upside,Transactions growth +1 pt,23.1
-Upside,Average check (price) +1 pt,72.4
-Upside,Food cost inflation -1 pt,28.9
-Upside,Wage inflation -1 pt,24.6
-Downside,Transactions growth +1 pt,26.2
-Downside,Average check (price) +1 pt,78.3
-Downside,Food cost inflation -1 pt,29.7
-Downside,Wage inflation -1 pt,25.9
+Base,Transactions growth +1 pt,24.3
+Base,Average check (price) +1 pt,75.7
+Base,Food cost inflation -1 pt,29.4
+Base,Wage inflation -1 pt,25.3
+Upside,Transactions growth +1 pt,23.6
+Upside,Average check (price) +1 pt,73.9
+Upside,Food cost inflation -1 pt,29.2
+Upside,Wage inflation -1 pt,25.0
+Downside,Transactions growth +1 pt,25.5
+Downside,Average check (price) +1 pt,77.9
+Downside,Food cost inflation -1 pt,29.6
+Downside,Wage inflation -1 pt,25.7
 
 scenario,to get back to the FY2025 margin,needed
-Base,transactions growth,11.8%
-Base,average check growth,5.3%
-Upside,transactions growth,4.8%
-Upside,average check growth,3.5%
+Base,transactions growth,more than 12.0%
+Base,average check growth,5.5%
+Upside,transactions growth,9.5%
+Upside,average check growth,4.3%
 Downside,transactions growth,more than 12.0%
-Downside,average check growth,8.3%
+Downside,average check growth,7.5%
