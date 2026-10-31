@@ -27,7 +27,7 @@ from sec_tables import tables, _text  # noqa: E402
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw" / "sec"
 OUT = ROOT / "data" / "processed"
-FIRST, LAST = (2021, 1), (2026, 2)
+FIRST, LAST = (2021, 1), (2026, 3)
 
 # P&L line -> XBRL tags to try in order, and the sign to apply
 LINES = {

@@ -1,8 +1,8 @@
 file,url,bytes,downloaded_utc
-data/raw/bls/bls_series.json,"https://api.bls.gov/publicAPI/v2/timeseries/data/ (POST CES7072200003,CES7072200008,APU0000703112,CUSR0000SEFV,CUSR0000SEFV02,CUSR0000SAF11)",72329,2026-10-15 18:29:51
+data/raw/bls/bls_series.json,"https://api.bls.gov/publicAPI/v2/timeseries/data/ (POST CES7072200003,CES7072200008,APU0000703112,CUSR0000SEFV,CUSR0000SAF11)",72214,2026-10-30 18:28:07
 data/raw/sec/company_tickers.json,https://www.sec.gov/files/company_tickers.json,799355,2026-10-15 18:22:19
 data/raw/sec/companyfacts_CAVA.json,https://data.sec.gov/api/xbrl/companyfacts/CIK0001639438.json,684406,2026-10-15 18:22:39
-data/raw/sec/companyfacts_CMG.json,https://data.sec.gov/api/xbrl/companyfacts/CIK0001058090.json,3012708,2026-10-15 18:22:20
+data/raw/sec/companyfacts_CMG.json,https://data.sec.gov/api/xbrl/companyfacts/CIK0001058090.json,3055241,2026-10-30 18:28:06
 data/raw/sec/companyfacts_SG.json,https://data.sec.gov/api/xbrl/companyfacts/CIK0001477815.json,1061423,2026-10-15 18:22:40
 data/raw/sec/companyfacts_SHAK.json,https://data.sec.gov/api/xbrl/companyfacts/CIK0001620533.json,2734455,2026-10-15 18:22:41
 data/raw/sec/companyfacts_WING.json,https://data.sec.gov/api/xbrl/companyfacts/CIK0001636222.json,1879469,2026-10-15 18:22:41
@@ -29,6 +29,7 @@ data/raw/sec/filings/CMG/10-Q_2025-06-30_cmg-20250630.htm,https://www.sec.gov/Ar
 data/raw/sec/filings/CMG/10-Q_2025-09-30_cmg-20250930.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809025000088/cmg-20250930.htm,1098247,2026-10-15 18:22:23
 data/raw/sec/filings/CMG/10-Q_2026-03-31_cmg-20260331.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000028/cmg-20260331.htm,826955,2026-10-15 18:22:21
 data/raw/sec/filings/CMG/10-Q_2026-06-30_cmg-20260630.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000066/cmg-20260630.htm,1056713,2026-10-15 18:22:20
+data/raw/sec/filings/CMG/10-Q_2026-09-30_cmg-20260930.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000104/cmg-20260930.htm,1097097,2026-10-30 18:28:06
 data/raw/sec/filings/CMG/8-K_2021-02-02_cmg-20210202xex99_1.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809021000005/cmg-20210202xex99_1.htm,686729,2026-10-15 18:22:39
 data/raw/sec/filings/CMG/8-K_2021-04-21_cmg-20210421xex99_1.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809021000014/cmg-20210421xex99_1.htm,475783,2026-10-15 18:22:38
 data/raw/sec/filings/CMG/8-K_2021-07-20_cmg-20210720xex99_1.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809021000033/cmg-20210720xex99_1.htm,642135,2026-10-15 18:22:37
@@ -52,6 +53,7 @@ data/raw/sec/filings/CMG/8-K_2025-10-29_cmg-20251029xex991.htm,https://www.sec.g
 data/raw/sec/filings/CMG/8-K_2026-02-03_cmg-20260203xex991.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000007/cmg-20260203xex991.htm,366461,2026-10-15 18:22:22
 data/raw/sec/filings/CMG/8-K_2026-04-29_cmg-20260429xex991.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000027/cmg-20260429xex991.htm,279782,2026-10-15 18:22:21
 data/raw/sec/filings/CMG/8-K_2026-07-29_cmg-20260729xex991.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000063/cmg-20260729xex991.htm,317498,2026-10-15 18:22:21
+data/raw/sec/filings/CMG/8-K_2026-10-28_cmg-20261028xex991.htm,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000103/cmg-20261028xex991.htm,310956,2026-10-30 18:28:07
 data/raw/sec/filings/CMG/_index/000105809021000005.json,https://www.sec.gov/Archives/edgar/data/1058090/000105809021000005/index.json,1895,2026-10-15 18:22:38
 data/raw/sec/filings/CMG/_index/000105809021000014.json,https://www.sec.gov/Archives/edgar/data/1058090/000105809021000014/index.json,1895,2026-10-15 18:22:37
 data/raw/sec/filings/CMG/_index/000105809021000033.json,https://www.sec.gov/Archives/edgar/data/1058090/000105809021000033/index.json,1895,2026-10-15 18:22:37
@@ -75,8 +77,9 @@ data/raw/sec/filings/CMG/_index/000105809025000086.json,https://www.sec.gov/Arch
 data/raw/sec/filings/CMG/_index/000105809026000007.json,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000007/index.json,1770,2026-10-15 18:22:22
 data/raw/sec/filings/CMG/_index/000105809026000027.json,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000027/index.json,1770,2026-10-15 18:22:21
 data/raw/sec/filings/CMG/_index/000105809026000063.json,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000063/index.json,1769,2026-10-15 18:22:21
+data/raw/sec/filings/CMG/_index/000105809026000103.json,https://www.sec.gov/Archives/edgar/data/1058090/000105809026000103/index.json,1769,2026-10-30 18:28:07
 data/raw/sec/submissions_CAVA.json,https://data.sec.gov/submissions/CIK0001639438.json,65370,2026-10-15 18:22:39
-data/raw/sec/submissions_CMG.json,https://data.sec.gov/submissions/CIK0001058090.json,159637,2026-10-15 18:22:20
+data/raw/sec/submissions_CMG.json,https://data.sec.gov/submissions/CIK0001058090.json,159600,2026-10-30 18:28:06
 data/raw/sec/submissions_SG.json,https://data.sec.gov/submissions/CIK0001477815.json,80820,2026-10-15 18:22:40
 data/raw/sec/submissions_SHAK.json,https://data.sec.gov/submissions/CIK0001620533.json,164452,2026-10-15 18:22:41
 data/raw/sec/submissions_WING.json,https://data.sec.gov/submissions/CIK0001636222.json,140527,2026-10-15 18:22:41

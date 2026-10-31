@@ -345,6 +345,22 @@ xbrl_vs_release,2026Q2,PASS,"pretax_income: filed 533,272 vs release 533,272"
 xbrl_vs_release,2026Q2,PASS,"net_income: filed 403,547 vs release 403,547"
 xbrl_vs_release,2026Q2,PASS,diluted_eps: 0.3155 vs release 0.3200
 xbrl_vs_release,2026Q2,PASS,"income_tax: filed 129,725 vs release 129,725"
+xbrl_vs_release,2026Q3,PASS,"revenue: filed 3,293,162 vs release 3,293,162"
+xbrl_vs_release,2026Q3,PASS,"food_bev_packaging: filed 972,360 vs release 972,360"
+xbrl_vs_release,2026Q3,PASS,"labor: filed 847,507 vs release 847,507"
+xbrl_vs_release,2026Q3,PASS,"occupancy: filed 179,403 vs release 179,403"
+xbrl_vs_release,2026Q3,PASS,"other_operating: filed 525,735 vs release 525,735"
+xbrl_vs_release,2026Q3,PASS,"g_and_a: filed 185,228 vs release 185,228"
+xbrl_vs_release,2026Q3,PASS,"d_and_a: filed 102,611 vs release 102,611"
+xbrl_vs_release,2026Q3,PASS,"pre_opening: filed 15,104 vs release 15,104"
+xbrl_vs_release,2026Q3,PASS,"impairment_closures: filed 13,250 vs release 13,250"
+xbrl_vs_release,2026Q3,PASS,"total_operating_expenses: filed 2,841,198 vs release 2,841,198"
+xbrl_vs_release,2026Q3,PASS,"operating_income: filed 451,964 vs release 451,964"
+xbrl_vs_release,2026Q3,PASS,"interest_other_income: filed 5,161 vs release 5,161"
+xbrl_vs_release,2026Q3,PASS,"pretax_income: filed 457,125 vs release 457,125"
+xbrl_vs_release,2026Q3,PASS,"net_income: filed 339,874 vs release 339,874"
+xbrl_vs_release,2026Q3,PASS,diluted_eps: 0.2681 vs release 0.2700
+xbrl_vs_release,2026Q3,PASS,"income_tax: filed 117,251 vs release 117,251"
 costs_sum_to_total,2021Q1,PASS,"1,580,133 vs 1,580,133"
 revenue_less_costs,2021Q1,PASS,"161,442 vs 161,442"
 costs_sum_to_total,2021Q2,PASS,"1,647,013 vs 1,647,013"
@@ -389,6 +405,8 @@ costs_sum_to_total,2026Q1,PASS,"2,691,179 vs 2,691,179"
 revenue_less_costs,2026Q1,PASS,"397,063 vs 397,063"
 costs_sum_to_total,2026Q2,PASS,"2,822,967 vs 2,822,967"
 revenue_less_costs,2026Q2,PASS,"525,595 vs 525,595"
+costs_sum_to_total,2026Q3,PASS,"2,841,198 vs 2,841,198"
+revenue_less_costs,2026Q3,PASS,"451,964 vs 451,964"
 restaurant_rollforward,2020Q1,PASS,"2,638 vs 2,638"
 restaurant_rollforward,2020Q2,PASS,"2,669 vs 2,669"
 restaurant_rollforward,2020Q3,PASS,"2,710 vs 2,710"
@@ -415,6 +433,7 @@ restaurant_rollforward,2025Q3,PASS,"3,916 vs 3,916"
 restaurant_rollforward,2025Q4,PASS,"4,042 vs 4,042"
 restaurant_rollforward,2026Q1,PASS,"4,090 vs 4,090"
 restaurant_rollforward,2026Q2,PASS,"4,186 vs 4,186"
+restaurant_rollforward,2026Q3,PASS,"4,267 vs 4,267"
 comps_equal_tx_plus_check,2023Q4,PASS,8.4 vs 8.4
 comps_equal_tx_plus_check,2024Q1,PASS,7.0 vs 7.0
 comps_equal_tx_plus_check,2024Q2,PASS,11.1 vs 11.1
@@ -426,6 +445,7 @@ comps_equal_tx_plus_check,2025Q3,PASS,0.3 vs 0.3
 comps_equal_tx_plus_check,2025Q4,PASS,-2.5 vs -2.5
 comps_equal_tx_plus_check,2026Q1,PASS,0.5 vs 0.5
 comps_equal_tx_plus_check,2026Q2,PASS,2.2 vs 2.2
+comps_equal_tx_plus_check,2026Q3,PASS,2.1 vs 2.1
 restaurant_margin_vs_reported,2021Q1,PASS,22.32% vs reported 22.3%
 restaurant_margin_vs_reported,2021Q2,PASS,24.46% vs reported 24.5%
 restaurant_margin_vs_reported,2021Q3,PASS,23.53% vs reported 23.5%
@@ -446,3 +466,4 @@ restaurant_margin_vs_reported,2025Q2,PASS,27.36% vs reported 27.4%
 restaurant_margin_vs_reported,2025Q3,PASS,24.49% vs reported 24.5%
 restaurant_margin_vs_reported,2025Q4,PASS,23.42% vs reported 23.4%
 restaurant_margin_vs_reported,2026Q2,PASS,25.22% vs reported 25.2%
+restaurant_margin_vs_reported,2026Q3,PASS,23.33% vs reported 23.3%
