@@ -7,7 +7,7 @@ import subprocess
 import sys
 
 steps = ["src/extract_cmg.py", "src/extract_peers.py", "src/check_data.py", "src/run_model.py",
-         "src/make_charts.py", "src/make_tableau_data.py"]
+         "src/baseline_forecast.py", "src/score_forecast.py", "src/make_charts.py", "src/make_tableau_data.py"]
 if "--download" in sys.argv:
     steps.insert(0, "src/fetch_data.py")
 

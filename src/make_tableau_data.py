@@ -30,7 +30,7 @@ def margin(q):
     return 1 - (r.food_bev_packaging + r.labor + r.occupancy + r.other_operating) / r.revenue
 
 
-# 1. quarterly series: actuals plus each forecast scenario (joined at Q2 2026 so the lines connect)
+# 1. quarterly series: actuals plus each forecast scenario (joined at the last actual so the lines connect)
 rows = []
 for q in pnl.index:
     rows.append({"quarter": label(q), "series": "Actual", "restaurant_margin": margin(q),
@@ -76,9 +76,14 @@ pd.DataFrame(pr).to_csv(TAB / "peers.csv", index=False)
 # 6. Q3 scorecard (display strings, so the table needs no number formatting)
 shown = [("1 Comparable sales", f"{lock['comps']:+.1%}"), ("2 Revenue", f"${lock['rev2'] / 1000:,.0f}M"),
          ("3 Restaurant-level margin", f"{lock['rlm']:.1%}"), ("4 Diluted EPS", f"${lock['eps']:.2f}")]
+actual = {}
+var_file = OUT / "q3_2026_variance.csv"
+if var_file.exists():
+    v = pd.read_csv(var_file).set_index("key")["actual"]
+    actual = {"1": f"{v['comps']:+.1%}", "2": f"${v['rev2'] / 1000:,.0f}M", "3": f"{v['rlm']:.1%}", "4": f"${v['eps']:.2f}"}
 sc = []
 for line, value in shown:
     sc.append({"line": line[2:], "order": line[0], "column": "My forecast", "shown": value})
-    sc.append({"line": line[2:], "order": line[0], "column": "Reported", "shown": "Oct 28"})
+    sc.append({"line": line[2:], "order": line[0], "column": "Reported", "shown": actual.get(line[0], "Oct 28")})
 pd.DataFrame(sc).to_csv(TAB / "q3_scorecard.csv", index=False)
 print("wrote", sorted(p.name for p in TAB.glob("*.csv")))

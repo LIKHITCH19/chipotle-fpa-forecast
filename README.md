@@ -12,7 +12,8 @@ I made a forecast for Q3 2026 on October 15 and published it on
 on October 16, twelve days before Chipotle reported on October 28. The
 dashboard's publish date is the record of that; this repo went up after the
 results. Restaurant-level margin came in at 23.3% against my 23.4%, and EPS at
-$0.27, as forecast.
+$0.27, as forecast. After the results I rolled the model forward to a new
+forecast for Q4 2026 and 2027.
 
 This is an independent analysis of public SEC filings. I'm not affiliated with
 Chipotle, and nothing here is investment advice.
@@ -24,7 +25,7 @@ Chipotle, and nothing here is investment advice.
 - **Q3 variance write-up:** [`docs/q3_2026_variance.md`](docs/q3_2026_variance.md)
 - **KPI tree and definitions:** [`docs/kpi_tree.md`](docs/kpi_tree.md)
 - **Dashboard:** [Tableau Public](https://public.tableau.com/app/profile/likhit.vardhan.chiliveri/viz/ChipotleFPA-2027MarginBudgetandQ32026Forecast/ChipotleFPA)
-  (workbook in [`tableau/`](tableau/))
+  (as published on Oct 16, before the results; workbook in [`tableau/`](tableau/))
 
 [![Tableau dashboard](images/dashboard.png)](https://public.tableau.com/app/profile/likhit.vardhan.chiliveri/viz/ChipotleFPA-2027MarginBudgetandQ32026Forecast/ChipotleFPA)
 
@@ -51,13 +52,37 @@ quarters. It was the most accurate on both revenue and margin:
 | Holt-Winters | -1.1% | 24 bps |
 | Seasonal naive | -2.1% | 117 bps |
 
+## Reforecast after Q3
+
+With Q3 in the actuals and management's Oct 28 guidance for Q4, the model now
+forecasts Q4 2026 to Q4 2027. The Oct 15 budget's outputs are kept in
+[`output/budget_oct15/`](output/budget_oct15/).
+
+| Base case | Oct 15 budget | Oct 30 reforecast |
+|---|---|---|
+| FY2026 restaurant-level margin | 23.6% | 23.4% |
+| FY2027 restaurant-level margin | 23.1% | 22.4% |
+| FY2027 comparable sales | +3.3% | +3.0% |
+| FY2026 diluted EPS | $1.09 | $1.05 |
+| FY2027 diluted EPS | $1.23 | $1.15 |
+
+About half of the 2027 drop is price. On the Q3 call management said pricing
+near 2% is "just not looking like" it will happen in 2027, so the Base case now
+has average check growth of 1.5% against 2.0% before (about -40 bps). The rest
+comes from starting higher on costs: Q3 other operating costs ran at 16.0% of
+sales, and the model builds each 2027 quarter off the same quarter of 2026.
+Management called a mid-24% margin the 2027 baseline, but that assumes pricing
+keeps up with cost inflation. My Base case doesn't, which is the main reason
+it sits about two points lower. The Upside case (2% check growth, lower cost
+inflation) reaches 23.9%.
+
 ## What I found
 
 **1. Margins have been falling for two years, and the Base case doesn't get
-them back in 2027.** Restaurant-level margin was 26.7% in 2024, 25.4% in 2025,
-and I have it at 23.6% for 2026 and 23.1% for 2027. The Upside case reaches
-24.9%; the Downside drops to 20.1%. EPS still grows in the Base case ($1.09 in
-2026 to $1.23 in 2027) because of new restaurants and buybacks.
+them back in 2027.** Restaurant-level margin was 26.7% in 2024 and 25.4% in
+2025. After Q3 I have it at 23.4% for 2026 and 22.4% for 2027. The Upside case
+reaches 23.9%; the Downside drops to 20.6%. EPS still grows in the Base case
+($1.05 in 2026 to $1.15 in 2027) because of new restaurants and buybacks.
 
 ![Restaurant-level margin by quarter](images/margin_trend.png)
 
@@ -67,25 +92,27 @@ costs took 93 bps of that and food took 75 bps.
 
 ![Margin bridge](images/margin_bridge.png)
 
-**3. The sales problem is traffic, and price hasn't made up for it.** Comparable
-transactions fell 2.3%, 4.9%, 0.8% and 3.2% across 2025. Average check grew
-only 0.7-1.9% a quarter, because Chipotle has kept pricing below the industry
-(restaurant prices nationally are up 3.5% in the last year).
+**3. The sales problem was traffic, and price hasn't made up for it.**
+Comparable transactions fell 2.3%, 4.9%, 0.8% and 3.2% across 2025. They have
+been positive for three quarters since (+0.6%, +1.0%, +0.8%), but average check
+grew only 0.7-1.9% a quarter, because Chipotle has kept pricing below the
+industry (restaurant prices nationally are up 3.5% in the last year) and
+promotions are eating into the price it does take.
 
 ![Transactions and average check](images/traffic_vs_check.png)
 
 **4. Price is the lever that matters most.** One more point of average check
-adds about 75 bps to 2027 margin. One more point of traffic adds 24 bps, food
+adds about 76 bps to 2027 margin. One more point of traffic adds 24 bps, food
 cost 1 point lower adds 29, wages 1 point lower add 25. Getting back to 2025's
-margin would take check growth of about 5.3% (the Base case has 2.0%) or about
-12% traffic growth. Price keeps paying off unless each point of it costs more
-than about three points of traffic.
+margin would take check growth of about 5.5% (the Base case has 1.5%) or more
+than 12% traffic growth. Price keeps paying off unless each point of it costs
+more than about three points of traffic.
 
 ![Margin effect of each lever](images/levers.png)
 
 **5. Chipotle's margin lead over CAVA is gone.** Over the last twelve months
-Chipotle's restaurant-level margin was 24.1% and CAVA's was 24.6%, with CAVA
-growing 27% against Chipotle's 7%.
+Chipotle's restaurant-level margin was 23.8% (to September) and CAVA's was
+24.6% (to July), with CAVA growing 27% against Chipotle's 8%.
 
 ![Peers](images/peers.png)
 
@@ -105,19 +132,19 @@ variable, so falling traffic pushes them up as a share of sales. The full map
 is in [`docs/kpi_tree.md`](docs/kpi_tree.md).
 
 Every forecast input sits on the `Assumptions` tab with the reason for the
-number next to it, mostly from management's July 29 call and from cost trends
+number next to it, mostly from management's Oct 28 call and from cost trends
 backed out of the filings. One cell switches between Base, Upside and Downside.
 
 | Tab | What's on it |
 |---|---|
 | Assumptions | Scenario switch and every input, with its reasoning |
 | Model | Quarterly drivers, restaurant P&L and EPS, Q1 2025 to Q4 2027 |
-| Q3_Forecast | Locked Q3 forecast, management guidance, actuals and variance |
+| Q3_Forecast | Locked Q3 forecast, management guidance, actuals, variance and reasons |
 | Margin_Bridge | Cost-line bridges for history and forecast |
 | Sensitivity | Margin by traffic, price, food and wage assumptions; lever ranking |
 | Scenarios | Base, Upside and Downside side by side |
 | Peers | Chipotle, CAVA, Sweetgreen, Shake Shack on one margin definition |
-| Hist | 22 quarters as filed, plus derived ratios and tie-outs |
+| Hist | 23 quarters as filed, plus derived ratios and tie-outs |
 | Checks | 14 checks; all must pass |
 
 ## Checking the numbers
@@ -147,9 +174,10 @@ src/
   score_forecast.py   Q3 forecast vs actual
 data/processed/       tidy CSVs used by the model
 model/                the Excel model
-output/               locked Q3 forecast, quarterly model output, scenarios, levers
-tableau/              the Tableau workbook
-docs/                 memo, forecast note, KPI tree, data notes
+output/               locked Q3 forecast, variance, model output, scenarios, levers
+output/budget_oct15/  the Oct 15 budget's outputs, before the reforecast
+tableau/              the Tableau workbook (as published Oct 16)
+docs/                 memo, forecast note, variance write-up, KPI tree, data notes
 images/               charts
 ```
 

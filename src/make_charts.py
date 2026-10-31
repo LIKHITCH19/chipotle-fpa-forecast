@@ -147,11 +147,12 @@ for i, v in zip(xs, comps):
                 xytext=(0, 6), textcoords="offset points", ha="center", fontsize=8, color=INK)
 ax.axhline(0, color=AXIS, lw=1)
 ax.set_xticks(list(xs), [qlab(q) for q in sq], fontsize=8.5)
+ax.set_yticks(range(-4, 13, 4))
 ax.yaxis.set_major_formatter(lambda v, _: f"{v:.0f}%")
 ax.set_ylim(-6.5, 13)
 ax.grid(axis="x", visible=False)
 ax.legend(loc="upper right", frameon=False, fontsize=8.5, ncol=3)
-ax.set_title("Same-store sales: traffic fell through 2025 while price growth stayed low", pad=12)
+ax.set_title("Same-store sales: traffic fell through 2025, and price growth stayed low", pad=12)
 finish(fig, "traffic_vs_check.png", "Source: Chipotle earnings releases. Chipotle has split comparable sales into "
        "transactions and check only since Q4 2023.")
 
@@ -174,6 +175,6 @@ for ax, col, ttl in [(axes[0], "growth", "Revenue growth, last 12 months"),
     lo = min(0, d[col].min()) - 4
     ax.set_xlim(lo, d[col].max() + 8)
 fig.tight_layout()
-finish(fig, "peers.png", "Source: SEC XBRL filings, LTM to mid-2026. Margin rebuilt as revenue less food, labor, "
+finish(fig, "peers.png", "Source: SEC XBRL filings, LTM to mid-2026 (Chipotle to Sep 2026). Margin rebuilt as revenue less food, labor, "
        "occupancy and other restaurant costs. Shake Shack's margin can't be rebuilt from its tagged data, and its "
        "LTM includes a 53rd week.")
