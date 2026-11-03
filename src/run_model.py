@@ -13,9 +13,7 @@ Needs LibreOffice (soffice) on the PATH. Usage:
     python src/run_model.py --relock  # overwrite the locked Q3 forecast with the current Base case
 """
 import csv
-import json
 import shutil
-import subprocess
 import sys
 import tempfile
 from datetime import date
@@ -25,19 +23,18 @@ from openpyxl import load_workbook
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_model as bm  # noqa: E402
+from recalc import recalc as libre_recalc  # noqa: E402
 
 ROOT = bm.ROOT
 OUTDIR = ROOT / "output"
 LOCK_FILE = OUTDIR / "q3_2026_forecast_locked.csv"
-RECALC = Path(__file__).resolve().parent / "recalc.py"
 
 
 def recalc(path):
-    res = subprocess.run([sys.executable, str(RECALC), str(path), "120"], capture_output=True, text=True)
-    out = json.loads(res.stdout)
-    if out.get("status") != "success":
-        raise SystemExit(f"Recalculation problem in {path.name}: {out}")
-    return out
+    n, bad = libre_recalc(path)
+    if bad:
+        raise SystemExit(f"Formula errors in {path.name}: {bad[:10]}")
+    return n
 
 
 def values(path):
@@ -106,7 +103,7 @@ def main():
 
     bm.wb["Assumptions"]["C4"] = 1
     final = bm.build()
-    out = recalc(final)
+    n_formulas = recalc(final)
 
     # dashboard extracts
     rows = [row for name in ("Base", "Upside", "Downside") for row in res[name]["quarters"]]
@@ -133,7 +130,7 @@ def main():
             w.writerow([name, "average check growth", res[name]["needed_ck"]])
 
     wb = values(final)
-    print(f"{final.relative_to(ROOT)}: {out['total_formulas']} formulas, {out['total_errors']} errors")
+    print(f"{final.relative_to(ROOT)}: {n_formulas} formulas, no errors")
     print("Checks:", wb["Checks"]["B3"].value)
     for name in ("Base", "Upside", "Downside"):
         s = res[name]["scenarios"]

@@ -75,7 +75,7 @@ def section(ws, row, text, last_col):
 
 
 def note(ws, ref, text):
-    ws[ref].comment = Comment(text, "Model")
+    ws[ref].comment = Comment(text, "Likhit Vardhan Chiliveri")
 
 
 # ---------------------------------------------------------------- data
@@ -1101,7 +1101,7 @@ checks = [
      f"=SUMPRODUCT(MAX(ABS(Hist!{HQ.format(r=HROW['chk_oi'])})))", "=IF(B{r}<=5,\"PASS\",\"FAIL\")"),
     ("Hist: restaurant counts roll forward exactly (max gap)",
      f"=SUMPRODUCT(MAX(ABS(Hist!{HQ.format(r=HROW['chk_roll'])})))", "=IF(B{r}=0,\"PASS\",\"FAIL\")"),
-    ("Hist: our margin matches Chipotle's reported margin (max gap, pts)",
+    ("Hist: my margin matches Chipotle's reported margin (max gap, pts)",
      f"=SUMPRODUCT(MAX(ABS(Hist!{HQ.format(r=HROW['chk_rlm'])})))", "=IF(B{r}<=0.1,\"PASS\",\"FAIL\")"),
     ("Hist: FY2025 revenue = sum of quarters ($000)",
      f"=Hist!{HYCOL[2025]}{HROW['revenue']}-SUM(Hist!{HCOL['2025Q1']}{HROW['revenue']}:{HCOL['2025Q4']}{HROW['revenue']})",

@@ -1,4 +1,4 @@
-# tested with: requests 2.34.2, pandas 2.3.3, openpyxl 3.1.5, matplotlib 3.10.9, statsmodels 0.15.0
+# tested with: requests 2.34.2, pandas 2.3.3, openpyxl 3.1.5, matplotlib 3.11.2, statsmodels 0.15.0
 # rebuilding the workbook also needs LibreOffice (for formula recalculation)
 requests>=2.31
 pandas>=2.0

@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PROC, OUT, IMG = ROOT / "data" / "processed", ROOT / "output", ROOT / "images"
 IMG.mkdir(exist_ok=True)
 
-# palette (validated categorical order: blue, orange, aqua) and chart chrome
+# colours and chart style
 BLUE, ORANGE, AQUA, RED = "#2a78d6", "#eb6834", "#1baf7a", "#e34948"
 INK, INK2, MUTED, GRID, AXIS, SURFACE = "#0b0b0b", "#52514e", "#898781", "#e1e0d9", "#c3c2b7", "#fcfcfb"
 NEUTRAL = "#52514e"
